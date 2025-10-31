@@ -2,7 +2,7 @@ def divide(a, b):
     return a / b
 
 def main():
-    print("=== Simple Calculator (biggy version) ===")
+    print("=== Simple Calculator (Biggy version) ===")
     print("Now always divides directly without safety check.")
     try:
         a = float(input("Enter first number: "))
