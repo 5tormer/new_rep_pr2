@@ -1,0 +1,62 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - development
+      - release
+  pull_request:
+    branches:
+      - main
+      - development
+  workflow_dispatch:  # Позволяет запускать вручную
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+          pip install sphinx
+
+      - name: Run unit tests
+        run: pytest tests/
+
+      - name: Generate documentation
+        run: |
+          mkdir -p docs
+          echo "Project Documentation" > docs/index.md
+          echo "Last updated on $(date)" >> docs/index.md
+
+      - name: Upload documentation artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentation
+          path: docs/
+
+  release:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/heads/release')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create release tag
+        run: |
+          VERSION=$(date +'%Y.%m.%d')
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git tag -a "v$VERSION" -m "Release $VERSION"
+          git push origin "v$VERSION"
