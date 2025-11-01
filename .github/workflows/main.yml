@@ -63,11 +63,11 @@ jobs:
           uses: peter-evans/create-pull-request@v6
           with:
             token: ${{ secrets.GITHUB_TOKEN }}
-            branch: release
+            branch: development
             base: master
-            title: "Release → Master: Auto-merge after tests"
+            title: "development → Master: Auto-merge after tests"
             body: |
-              Автоматический релиз из ветки `release` в `master`.
+              Автоматический релиз из ветки `development` в `master`.
 
               Все тесты пройдены.
               Документация сгенерирована.
