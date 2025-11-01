@@ -45,18 +45,18 @@ jobs:
           name: documentation
           path: docs/
 
-  release:
-    needs: build-and-test
-    runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/heads/release')
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+  # release:
+  #   needs: build-and-test
+  #   runs-on: ubuntu-latest
+  #   if: startsWith(github.ref, 'refs/heads/release')
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
 
-      - name: Create release tag
-        run: |
-          VERSION=$(date +'%Y.%m.%d')
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-          git tag -a "v$VERSION" -m "Release $VERSION"
-          git push origin "v$VERSION"
+  #     - name: Create release tag
+  #       run: |
+  #         VERSION=$(date +'%Y.%m.%d')
+  #         git config user.name "github-actions"
+  #         git config user.email "actions@github.com"
+  #         git tag -a "v$VERSION" -m "Release $VERSION"
+  #         git push origin "v$VERSION"
