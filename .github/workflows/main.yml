@@ -45,6 +45,44 @@ jobs:
           name: documentation
           path: docs/
 
+  create-and-automerge-pr:
+      needs: build-and-test
+      runs-on: ubuntu-latest
+      if: github.ref == 'refs/heads/release' && github.event_name == 'push'
+      permissions:
+        contents: write
+        pull-requests: write
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
+          with:
+            fetch-depth: 0
+
+        - name: Create Pull Request
+          id: cpr
+          uses: peter-evans/create-pull-request@v6
+          with:
+            token: ${{ secrets.GITHUB_TOKEN }}
+            branch: release
+            base: master
+            title: "Release → Master: Auto-merge after tests"
+            body: |
+              Автоматический релиз из ветки `release` в `master`.
+
+              Все тесты пройдены.
+              Документация сгенерирована.
+              Дата: $(date +'%Y-%m-%d %H:%M')
+
+              Этот PR будет **автоматически слит** после успешных проверок.
+            draft: false
+            delete-branch: false
+
+        - name: Enable auto-merge for PR
+          if: steps.cpr.outputs.pull-request-number != ''
+          run: |
+            gh pr merge ${{ steps.cpr.outputs.pull-request-number }} --auto --squash
+          env:
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   # release:
   #   needs: build-and-test
   #   runs-on: ubuntu-latest
