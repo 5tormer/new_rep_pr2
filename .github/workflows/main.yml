@@ -3,12 +3,12 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - main
+      - master
       - development
       - release
   pull_request:
     branches:
-      - main
+      - master
       - development
   workflow_dispatch:  # Позволяет запускать вручную
 
@@ -31,7 +31,7 @@ jobs:
           pip install sphinx
 
       - name: Run unit tests
-        run: pytest tests/
+        run: python -m pytest tests/test.py -v
 
       - name: Generate documentation
         run: |
