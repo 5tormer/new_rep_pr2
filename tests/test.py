@@ -1,3 +1,5 @@
+import pytest
+
 from app1 import divide
 
 def test_divide_normal():
