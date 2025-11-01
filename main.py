@@ -1,5 +1,10 @@
 def divide(a, b):
-    return a / b
+    try:
+        o = a / b
+        print("Division result:", divide(a, b))
+    except:
+        return ZeroDivisionError
+    return o
 
 def main():
     print("=== Simple Calculator (BiggY version) ===")
@@ -7,7 +12,8 @@ def main():
     try:
         a = float(input("Enter first number: "))
         b = float(input("Enter second number: "))
-        print("Division result:", divide(a, b))
+        divide(a,b)
+
     except ValueError:
         print("Invalid input, please enter numbers only.")
 
