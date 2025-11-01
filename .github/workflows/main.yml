@@ -62,9 +62,9 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          branch: development
-          base: master
-          title: "dev → master (auto-merge)"
+          branch: master
+          base: development
+          title: "dev <- master (auto-merge)"
           body: |
             Авто-PR из `development` в `master`.
           commit-message: "chore: merge dev to master"
