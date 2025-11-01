@@ -45,44 +45,36 @@ jobs:
           name: documentation
           path: docs/
 
-  create-and-automerge-pr:
-      needs: build-and-test
-      runs-on: ubuntu-latest
-      if: github.ref == 'refs/heads/development' && github.event_name == 'push'
-      permissions:
-        contents: write
-        pull-requests: write
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v4
-          with:
-            fetch-depth: 0
+  dev-to-master:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/development' && github.event_name == 'push'
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-        - name: Create Pull Request
-          id: cpr
-          uses: peter-evans/create-pull-request@v6
-          with:
-            token: ${{ secrets.GITHUB_TOKEN }}
-            branch: development
-            base: master
-            title: "development → Master: Auto-merge after tests"
-            body: |
-              Автоматический релиз из ветки `development` в `master`.
+      - name: Create PR
+        id: cpr
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: development
+          base: master
+          title: "dev → master (auto-merge)"
+          body: |
+            Авто-PR из `development` в `master`.
+          commit-message: "chore: merge dev to master"
 
-              Все тесты пройдены.
-              Документация сгенерирована.
-              Дата: $(date +'%Y-%m-%d %H:%M')
-
-              Этот PR будет **автоматически слит** после успешных проверок.
-            draft: false
-            delete-branch: false
-
-        - name: Enable auto-merge for PR
-          if: steps.cpr.outputs.pull-request-number != ''
-          run: |
-            gh pr merge ${{ steps.cpr.outputs.pull-request-number }} --auto --squash
-          env:
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Enable auto-merge
+        if: steps.cpr.outputs.pull-request-number != ''
+        run: |
+          gh pr merge ${{ steps.cpr.outputs.pull-request-number }} --auto --squash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   # release:
   #   needs: build-and-test
   #   runs-on: ubuntu-latest
