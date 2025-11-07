@@ -43,7 +43,7 @@ jobs:
           git add docs
           git push 
         # echo "Project Documentation" > docs/index.md
-         # echo "Last updated on $(date)" >> docs/index.md
+        # echo "Last updated on $(date)" >> docs/index.md
 
       - name: Upload documentation artifact
         uses: actions/upload-artifact@v4
