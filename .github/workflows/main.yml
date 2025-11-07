@@ -10,7 +10,7 @@ on:
     branches:
       - master
       - development
-  workflow_dispatch:  # Позволяет запускать вручную
+  workflow_dispatch:
 
 jobs:
   build-and-test:
@@ -29,15 +29,21 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest
           pip install sphinx
+          pip install -r requirements.txt
+          pip install pdoc
 
       - name: Run unit tests
         run: python -m pytest tests/test.py -v
 
       - name: Generate documentation
         run: |
+          export PYTHONPATH=$PYTHONPATH:.
           mkdir -p docs
-          echo "Project Documentation" > docs/index.md
-          echo "Last updated on $(date)" >> docs/index.md
+          pdoc pr2 tests -o docs
+          git add docs
+          git push 
+        # echo "Project Documentation" > docs/index.md
+         # echo "Last updated on $(date)" >> docs/index.md
 
       - name: Upload documentation artifact
         uses: actions/upload-artifact@v4
